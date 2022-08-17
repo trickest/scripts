@@ -1,0 +1,6 @@
+name: sort-uniq
+description: Sort all data and delete duplicates in files in in directory.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} +  | sort -n | uniq | tee out/output.txt
+language: bash

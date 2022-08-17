@@ -1,0 +1,6 @@
+name: awk-print-last-column
+description: Prints last column of a files in in folder.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} +  | awk '{print $(NF)}' | tee out/output.txt
+language: bash

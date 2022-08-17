@@ -1,0 +1,6 @@
+name: sort
+description: Sort all data in files in in directory.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | sort | tee out/output.txt
+language: bash

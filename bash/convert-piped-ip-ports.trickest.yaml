@@ -1,0 +1,6 @@
+name: convert-piped-ip-ports
+description: Converts output with | delimiter to ip:port format.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | awk -F"|" '{print $1":"$2}' | tee out/output.txt
+language: bash

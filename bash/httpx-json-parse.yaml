@@ -1,0 +1,9 @@
+name: httpx-json-parse
+description: Parse httpx JSON output to line by line file
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | jq -r '"\(try(.url)) \([try(."title")]) \([try(."status-code")])
+  \([try(."content-length")]) \([try(."content-type")]) \([try(."host")]) \([try(."final-url")])
+  \([try(."webserver")]) \([try(."technologies")]) \([try(."a"|.[] | tostring)])"'
+  | tee out/output.txt
+language: bash

@@ -1,0 +1,6 @@
+name: custom-script
+description: Create a custom script
+author: trickest
+author_info: https://trickest.com
+script: '# edit this'
+language: bash

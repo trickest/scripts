@@ -1,0 +1,6 @@
+name: generate-sequence-of-numbers
+description: Sequence of numbers generator!
+author: trickest
+author_info: https://trickest.com
+script: for i in {1..10};do echo $i;done | tee out/output.txt
+language: bash

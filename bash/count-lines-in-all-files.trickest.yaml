@@ -1,0 +1,6 @@
+name: count-lines-in-all-files
+description: Used to quickly count all lines inside of all files in in folder.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | wc -l | tee out/output.txt
+language: bash

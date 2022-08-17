@@ -1,0 +1,6 @@
+name: rsync-in-out
+description: Copy all files from in folders to out folder recursively.
+author: trickest
+author_info: https://trickest.com
+script: rsync -rtv in out
+language: bash

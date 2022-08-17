@@ -1,0 +1,6 @@
+name: echo-string
+description: Echo string to output.
+author: trickest
+author_info: https://trickest.com
+script: echo "STRING" | tee out/output.txt
+language: bash

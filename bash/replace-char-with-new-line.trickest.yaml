@@ -1,0 +1,6 @@
+name: replace-char-with-new-line
+description: Replaces character with new lines, sorts and deduplicates.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | tr . '\n' | sort -n | uniq | tee out/output.txt
+language: bash

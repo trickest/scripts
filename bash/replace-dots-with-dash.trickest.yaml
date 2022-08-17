@@ -1,0 +1,6 @@
+name: replace-dots-with-dash
+description: Replacing dot in strings with dashes
+author: trickest
+author_info: https://trickest.com
+script: cat in/*/* | sed s/[.]/-/g | tee out/output.txt
+language: bash

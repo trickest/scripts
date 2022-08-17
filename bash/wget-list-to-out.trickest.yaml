@@ -1,0 +1,6 @@
+name: wget-list-to-out
+description: Wget list of urls and output to out directory
+author: trickest
+author_info: https://trickest.com
+script: wget -i in/*/* --directory-prefix out
+language: bash

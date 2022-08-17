@@ -1,0 +1,10 @@
+name: parse-nuclei-to-csv
+description: Parse nuclei JSON output to create valid csv
+author: trickest
+author_info: https://trickest.com
+script: 'find in -type f -exec cat {} + | jq ''. | {vulnerability_id: .templateID,
+  tags: .info.tags, description: .info.description, authors: .info.author, severity:
+  .info.severity, type: .type, host: .host, ip: .ip, match: .matched, vuln_name: .matcher_name,
+  extracted_results: .extracted_results|tostring, timestamp: .timestamp}'' | jq -r
+  ''to_entries|map(.value)|@csv'' | tee out/output.txt'
+language: bash

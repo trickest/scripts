@@ -1,0 +1,6 @@
+name: cat-all-in
+description: Cat all files in in directory
+author: trickest
+author_info: https://trickest.com
+script: cat in/*/* | tee out/output.txt
+language: bash

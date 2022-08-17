@@ -1,0 +1,7 @@
+name: delete-dot-as-first-char
+description: Delete dot when first character, usefull for parsing subdomains with
+  not valid results.
+author: trickest
+author_info: https://trickest.com
+script: cat in/*/* | sed 's/^\.//' | sort -n | uniq | tee out/output.txt
+language: bash

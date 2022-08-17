@@ -1,0 +1,8 @@
+name: find-strings-in-meg-responses
+description: Find string in meg responses and print urls.
+author: gliga
+author_info: https://trickest.com
+script: for f in $(find in -mindepth 3 -type f -exec grep 'root:' -R {} + | cut -d":"
+  -f1 | sort -u); do echo "$(head -1 $f) [VULNERABLE]" | egrep '^http'; done | tee
+  out/output.txt
+language: bash

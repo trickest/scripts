@@ -1,0 +1,6 @@
+name: awk-take-second-row
+description: Extract second column from all files in in directory.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | awk -F " " '{print $2}' | tee out/output.txt
+language: bash

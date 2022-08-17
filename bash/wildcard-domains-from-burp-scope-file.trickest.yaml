@@ -1,0 +1,8 @@
+name: wildcard-domains-from-burp-scope-file
+description: Get all wildcard domains from Burp scope json file.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | jq '.target.scope.include[] | .host' | grep
+  "*" | sed 's/\\//g' | sed 's/\"^.\*//g' | sed 's/$\"//g' | sed 's/^\.//'  | sort
+  -n | uniq | tee out/output.txt
+language: bash

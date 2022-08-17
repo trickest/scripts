@@ -1,0 +1,6 @@
+name: awk-take-first-row
+description: Extract first column from all files in in directory.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | awk -F " " '{print $1}' | tee out/output.txt
+language: bash

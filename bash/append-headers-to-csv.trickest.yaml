@@ -1,0 +1,7 @@
+name: append-headers-to-csv
+description: Append headers supplied to csv file without them.
+author: trickest
+author_info: https://trickest.com
+script: (echo "vulnerability_id,tags,description,authors,severity,type,host,ip,match,vuln_name,extracted_results,timestamp"
+  && find in -type f -exec cat {} +) > out/output.txt
+language: bash

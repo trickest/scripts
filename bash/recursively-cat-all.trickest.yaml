@@ -1,0 +1,6 @@
+name: recursively-cat-all
+description: Recursively cat all files in a folder.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | tee out/output.txt
+language: bash

@@ -1,0 +1,7 @@
+name: egrep-multiple-values
+description: Egrep multiple values and print last in array.
+author: trickest
+author_info: https://trickest.com
+script: cat in/*/* | egrep -w 'url|robots|linkfinder' | awk -F" " '{print $NF}' |
+  tee out/output.txt
+language: bash

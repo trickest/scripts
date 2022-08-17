@@ -1,0 +1,6 @@
+name: sed-add-at-beginning
+description: Add string at the beginning of each line using sed.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | sed 's/^/https:\/\//' | tee out/output.txt
+language: bash

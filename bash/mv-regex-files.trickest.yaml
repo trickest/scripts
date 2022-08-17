@@ -1,0 +1,6 @@
+name: mv-regex-files
+description: Move specific files from in to out.
+author: trickest
+author_info: https://trickest.com
+script: mv in/*/*-takeover* out/
+language: bash

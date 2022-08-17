@@ -1,0 +1,6 @@
+name: sed-add-at-end
+description: Add string at the end of each line using sed.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | sed 's/$/\/FUZZ/' | tee out/output.txt
+language: bash

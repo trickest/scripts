@@ -1,0 +1,6 @@
+name: remove-whitespaces
+description: Remove whitespaces to files when appending values at the end of lines.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | tr  -d '[:blank:]' | tee out/output.txt
+language: bash

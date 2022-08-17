@@ -1,0 +1,9 @@
+name: create-wordlist-from-robots-txt
+description: One-liner for generating wordlists from robots.txt
+author: kljunowsky
+author_info: milan.jovictrickest.com
+script: 'find in/ -mindepth 3 -type f -exec cat {} + | egrep -w "Disallow|Allow: "
+  | awk ''{print $2}'' | sed ''s/^\///'' | sed ''s/\/$//'' | sed ''/^[[:space:]]*$/d''|
+  sed ''s/\*$//'' | sed ''s/^\*//'' | sed ''s/\/$//'' | sed -e ''s/\*\///g'' | sed
+  -e s/\*//g | uniq | tee out/output.txt'
+language: bash

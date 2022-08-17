@@ -1,0 +1,6 @@
+name: gunzip-jsons-to-out
+description: Extract gunzip file and cat json files to out file.
+author: trickest
+author_info: https://trickest.com
+script: gunzip in/*/*.gz && find in -name '*.json' -exec cat {} \;  | tee out/output.txt
+language: bash

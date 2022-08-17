@@ -1,0 +1,6 @@
+name: print-to-lower
+description: Print file content to lowecase
+author: trickest
+author_info: https://trickest.com
+script: cat in/*/* | awk '{print tolower($0)}' | tee out/output.txt
+language: bash

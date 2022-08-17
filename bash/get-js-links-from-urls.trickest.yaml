@@ -1,0 +1,6 @@
+name: get-js-links-from-urls
+description: Get all js links from list of urls
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} +  | grep -Eo "https?://\S+?\.js" | tee out/output.txt
+language: bash

@@ -1,0 +1,6 @@
+name: recursively-cat-with-extension
+description: Cat all files with custom extension
+author: trickest
+author_info: https://trickest.com
+script: find in -name '*.txt' -exec cat {} \;  | tee out/output.txt
+language: bash

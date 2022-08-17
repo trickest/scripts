@@ -1,0 +1,6 @@
+name: zip-to-out
+description: Zip all files and move to out directory
+author: trickest
+author_info: https://trickest.com
+script: zip -r output.zip in && mv output.zip out
+language: bash

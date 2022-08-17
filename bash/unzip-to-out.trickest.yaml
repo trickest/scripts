@@ -1,0 +1,6 @@
+name: unzip-to-out
+description: Unzip files in in folder to out folder
+author: trickest
+author_info: https://trickest.com
+script: unzip in/*/*.zip -d out
+language: bash

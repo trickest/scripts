@@ -1,0 +1,6 @@
+name: egrep-urls-from-list-of-files
+description: Extract urls from list of files with regex.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | egrep -o 'https?://[^ ]+' | tee out/output.txt
+language: bash

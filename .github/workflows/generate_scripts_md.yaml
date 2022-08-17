@@ -1,0 +1,66 @@
+name: Generate scripts.md
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - bash/**
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: pip install oyaml
+      - uses: jannekem/run-python-script-action@v1
+        with:
+          script: |
+            import os
+            import oyaml as yaml
+
+            def create_script_section(script):
+                language_colors = {
+                    'bash': 'black'
+                }
+
+                md = """### {name}
+            <img src="https://img.shields.io/badge/language-{language}-{color}">
+            {description}
+
+            ```
+            {script}
+            ```
+            Contributed by [{author}]({author_info})
+
+            ---
+            """.format(
+                    name=script['name'],
+                    language=script['language'],
+                    color=language_colors[script['language']],
+                    description=script['description'],
+                    script=script['script'],
+                    author=script['author'],
+                    author_info=script['author_info']
+                )
+                return md
+
+            l = os.listdir('bash')
+            l.sort()
+
+            output = open("scripts.md", "w")
+            for i in l:
+                f = open('bash/'+i)
+                y = yaml.safe_load(f)
+                output.write(create_script_section(y))
+            output.close()
+      - name: Commit files
+        run: |
+          git config --local user.email "gh-wf-commiter@trickest.com"
+          git config --local user.name "trickest-workflows"
+          git add scripts.md
+          git commit -m "Update scripts.md"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

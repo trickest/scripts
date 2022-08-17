@@ -1,0 +1,6 @@
+name: cat-from-to-lines
+description: Cat file from line number to line number with sed.
+author: trickest
+author_info: https://trickest.com
+script: sed -n 1,100p in/*/* | tee out/output.txt
+language: bash

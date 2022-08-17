@@ -1,0 +1,7 @@
+name: add-line-to-shodan-query
+description: Add lines to values of shodan query.
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | awk '{ if ($0 != "") print "ssl.cert.subject.cn:\"*."$0"\""}'  |
+  tee out/output.txt
+language: bash
