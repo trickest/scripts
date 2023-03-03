@@ -88,6 +88,36 @@ sed -n 1,100p in/*/* | tee out/output.txt
 Contributed by [trickest](https://trickest.com)
 
 ---
+### clone-github-repository
+<img src="https://img.shields.io/badge/language-bash-black">
+Efficiently clone a GitHub repository using the appropriate configuration.
+
+```
+USERNAME="YOUR_GITHUB_USERNAME"
+EMAIL="YOUR_GITHUB_EMAIL"
+REPOSITORY="USER/REPO"
+TOKEN=$(cat /hive/in/http-input-1/output.txt)
+
+BRANCH="main"
+
+git config --global user.email "$EMAIL"
+git config --global user.name "$USERNAME"
+git config --global pack.windowMemory "50m"
+git config --global http.version HTTP/1.1
+git config --global http.postBuffer 157286400
+git config --global http.lowSpeedLimit 0
+git config --global http.lowSpeedTime 999999
+
+git clone -b $BRANCH --depth 1 https://$USERNAME:$TOKEN@github.com/$REPOSITORY.git
+cd $(echo $REPOSITORY | awk -F '/' '{print $2}')
+
+# process your repository here
+ls | tee /hive/out/output.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
 ### convert-piped-ip-ports
 <img src="https://img.shields.io/badge/language-bash-black">
 Converts output with | delimiter to ip:port format.
@@ -115,7 +145,7 @@ One-liner for generating wordlists from robots.txt
 ```
 find in/ -mindepth 3 -type f -exec cat {} + | egrep -w "Disallow|Allow: " | awk '{print $2}' | sed 's/^\///' | sed 's/\/$//' | sed '/^[[:space:]]*$/d'| sed 's/\*$//' | sed 's/^\*//' | sed 's/\/$//' | sed -e 's/\*\///g' | sed -e s/\*//g | uniq | tee out/output.txt
 ```
-Contributed by [kljunowsky](milan.jovictrickest.com)
+Contributed by [kljunowsky](https://trickest.com)
 
 ---
 ### custom-script
@@ -123,7 +153,13 @@ Contributed by [kljunowsky](milan.jovictrickest.com)
 Create a custom script
 
 ```
-# edit this
+# Edit this
+# You are currently inside the /hive directory
+# Input node files/folders are accessible through /hive/in/NODE_ID
+#   e.g. cat in/amass-1/output.txt
+# To output a file/folder, write it to the /hive/out directory
+#   e.g. echo "Hello, world!" | tee out/output.txt
+
 ```
 Contributed by [trickest](https://trickest.com)
 
@@ -186,6 +222,7 @@ Paste raw data and add it to output.
 cat << "EOF" | tee out/output.txt
 ADD_CONTENT_HERE
 EOF
+
 ```
 Contributed by [trickest](https://trickest.com)
 
@@ -217,7 +254,13 @@ Generate batches of lines used for batch-output.
 ```
 BATCH_SIZE=100
 
-find in -type f -exec cat {} + > /tmp/merged.txt FILE_SIZE=$(wc /tmp/merged.txt | awk '{print $1}') for ((i=1;i<=FILE_SIZE;i+=BATCH_SIZE)) do echo $i,$(($i+$BATCH_SIZE)) done | tee out/output.txt
+find in -type f -exec cat {} + > /tmp/merged.txt
+
+FILE_SIZE=$(wc /tmp/merged.txt | awk '{print $1}')
+
+for ((i=1;i<=FILE_SIZE;i+=BATCH_SIZE)); do
+  echo $i,$(($i+$BATCH_SIZE))
+done | tee out/output.txt
 ```
 Contributed by [trickest](https://trickest.com)
 
@@ -252,6 +295,211 @@ curl --silent https://stat.ripe.net/data/announced-prefixes/data.json\?resource\
 Contributed by [trickest](https://trickest.com)
 
 ---
+### get-inventory-cloud
+<img src="https://img.shields.io/badge/language-bash-black">
+Gather cloud assets from the Inventory project
+
+```
+FILE_NAME="cloud"
+
+BASE_URL="https://raw.githubusercontent.com/trickest/inventory/main"
+# Usage:
+#     get_invetory_files FILE_NAME COMPANY
+#     
+#     Example
+#     get_inventory_files spider Netflix
+get_inventory_files() {
+    company=$2
+    file=$1
+    if ! wget "${BASE_URL}/${company}/${file}.txt" -O "out/${company}_${file}.txt" || [ ! -s  "${company}_${file}.txt" ]; then
+        i=00
+        while wget "${BASE_URL}/${company}/${file}_${i}.txt" -O "out/${company}_${file}_${i}.txt"; do
+            i=$(printf '%02d' $((i+1)))
+        done
+    fi
+}
+
+echo "Downloading the targets index"
+wget ${BASE_URL}/targets.json
+jq -r '.targets[].name' targets.json > companies.txt
+
+echo "Downloading $FILE_NAME files"
+while read company; do
+    echo $company
+    get_inventory_files $FILE_NAME $company
+done < companies.txt
+
+find out -type f -empty -delete
+cat out/* > out/output.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### get-inventory-hostnames
+<img src="https://img.shields.io/badge/language-bash-black">
+Gather hostnames from the Inventory project
+
+```
+FILE_NAME="hostnames"
+
+BASE_URL="https://raw.githubusercontent.com/trickest/inventory/main"
+# Usage:
+#     get_invetory_files FILE_NAME COMPANY
+#     
+#     Example
+#     get_inventory_files spider Netflix
+get_inventory_files() {
+    company=$2
+    file=$1
+    if ! wget "${BASE_URL}/${company}/${file}.txt" -O "out/${company}_${file}.txt" || [ ! -s  "${company}_${file}.txt" ]; then
+        i=00
+        while wget "${BASE_URL}/${company}/${file}_${i}.txt" -O "out/${company}_${file}_${i}.txt"; do
+            i=$(printf '%02d' $((i+1)))
+        done
+    fi
+}
+
+echo "Downloading the targets index"
+wget ${BASE_URL}/targets.json
+jq -r '.targets[].name' targets.json > companies.txt
+
+echo "Downloading $FILE_NAME files"
+while read company; do
+    echo $company
+    get_inventory_files $FILE_NAME $company
+done < companies.txt
+
+find out -type f -empty -delete
+cat out/* > out/output.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### get-inventory-servers
+<img src="https://img.shields.io/badge/language-bash-black">
+Gather servers from the Inventory project
+
+```
+FILE_NAME="servers"
+
+BASE_URL="https://raw.githubusercontent.com/trickest/inventory/main"
+# Usage:
+#     get_invetory_files FILE_NAME COMPANY
+#     
+#     Example
+#     get_inventory_files spider Netflix
+get_inventory_files() {
+    company=$2
+    file=$1
+    if ! wget "${BASE_URL}/${company}/${file}.txt" -O "out/${company}_${file}.txt" || [ ! -s  "${company}_${file}.txt" ]; then
+        i=00
+        while wget "${BASE_URL}/${company}/${file}_${i}.txt" -O "out/${company}_${file}_${i}.txt"; do
+            i=$(printf '%02d' $((i+1)))
+        done
+    fi
+}
+
+echo "Downloading the targets index"
+wget ${BASE_URL}/targets.json
+jq -r '.targets[].name' targets.json > companies.txt
+
+echo "Downloading $FILE_NAME files"
+while read company; do
+    echo $company
+    get_inventory_files $FILE_NAME $company
+done < companies.txt
+
+find out -type f -empty -delete
+cat out/* > out/output.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### get-inventory-spider
+<img src="https://img.shields.io/badge/language-bash-black">
+Gather web spider results from the Inventory project
+
+```
+FILE_NAME="spider"
+
+BASE_URL="https://raw.githubusercontent.com/trickest/inventory/main"
+# Usage:
+#     get_invetory_files FILE_NAME COMPANY
+#     
+#     Example
+#     get_inventory_files spider Netflix
+get_inventory_files() {
+    company=$2
+    file=$1
+    if ! wget "${BASE_URL}/${company}/${file}.txt" -O "out/${company}_${file}.txt" || [ ! -s  "${company}_${file}.txt" ]; then
+        i=00
+        while wget "${BASE_URL}/${company}/${file}_${i}.txt" -O "out/${company}_${file}_${i}.txt"; do
+            i=$(printf '%02d' $((i+1)))
+        done
+    fi
+}
+
+echo "Downloading the targets index"
+wget ${BASE_URL}/targets.json
+jq -r '.targets[].name' targets.json > companies.txt
+
+echo "Downloading $FILE_NAME files"
+while read company; do
+    echo $company
+    get_inventory_files $FILE_NAME $company
+done < companies.txt
+
+find out -type f -empty -delete
+cat out/* > out/output.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### get-inventory-urls
+<img src="https://img.shields.io/badge/language-bash-black">
+Gather URLs from the Inventory project
+
+```
+FILE_NAME="urls"
+
+BASE_URL="https://raw.githubusercontent.com/trickest/inventory/main"
+# Usage:
+#     get_invetory_files FILE_NAME COMPANY
+#     
+#     Example
+#     get_inventory_files spider Netflix
+get_inventory_files() {
+    company=$2
+    file=$1
+    if ! wget "${BASE_URL}/${company}/${file}.txt" -O "out/${company}_${file}.txt" || [ ! -s  "${company}_${file}.txt" ]; then
+        i=00
+        while wget "${BASE_URL}/${company}/${file}_${i}.txt" -O "out/${company}_${file}_${i}.txt"; do
+            i=$(printf '%02d' $((i+1)))
+        done
+    fi
+}
+
+echo "Downloading the targets index"
+wget ${BASE_URL}/targets.json
+jq -r '.targets[].name' targets.json > companies.txt
+
+echo "Downloading $FILE_NAME files"
+while read company; do
+    echo $company
+    get_inventory_files $FILE_NAME $company
+done < companies.txt
+
+find out -type f -empty -delete
+cat out/* > out/output.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
 ### get-js-links-from-urls
 <img src="https://img.shields.io/badge/language-bash-black">
 Get all js links from list of urls
@@ -277,6 +525,16 @@ Contributed by [trickest](https://trickest.com)
 Parse httpx JSON output to line by line file
 
 ```
+find in -type f -exec cat {} + | jq -r '"\(try(.url)) \([try(."title")]) \([try(."status_code")]) \([try(."content_length")]) \([try(."content_type")]) \([try(."host")]) \([try(."final_url")]) \([try(."webserver")]) \([try(."technologies")]) \([try(."a"|.[] | tostring)])"' | tee out/output.txt
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### httpx-json-parse
+<img src="https://img.shields.io/badge/language-bash-black">
+Parse httpx JSON output to line by line file
+
+```
 find in -type f -exec cat {} + | jq -r '"\(try(.url)) \([try(."title")]) \([try(."status-code")]) \([try(."content-length")]) \([try(."content-type")]) \([try(."host")]) \([try(."final-url")]) \([try(."webserver")]) \([try(."technologies")]) \([try(."a"|.[] | tostring)])"' | tee out/output.txt
 ```
 Contributed by [trickest](https://trickest.com)
@@ -288,6 +546,16 @@ JQ for parsing json results.
 
 ```
 cat in/*/* | jq -r '.results | .[]| "\(.url) \(.status) \(.length) \(.redirectlocation) "' | tee out/output.txt
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### masscan-ip-port
+<img src="https://img.shields.io/badge/language-bash-black">
+Parse masscan's output into IP:Port pairs (e.g. 127.0.0.1:80)
+
+```
+find in -type f -exec cat {} + | grep 'Host' | awk -F'[ /]' '{print $3":"$5}' | tee out/output.txt
 ```
 Contributed by [trickest](https://trickest.com)
 
@@ -382,12 +650,51 @@ rsync -rtv in out
 Contributed by [trickest](https://trickest.com)
 
 ---
-### script-from-scratch
+### rustscan-ip-port
 <img src="https://img.shields.io/badge/language-bash-black">
-Create script from scratch.
+Parse RustScan's output into IP:Port pairs (e.g. 127.0.0.1:80)
 
 ```
-<type-here>
+find in -type f -exec cat {} + > merged.txt
+
+while read line; do
+  # Extract the IP address and ports from each line
+  ip=$(echo $line | awk '{print $1}')
+  ports=$(echo $line | awk '{print $3}' | tr -d '[]')
+
+
+  # Split the ports into an array
+  IFS=',' read -ra port_arr <<< "$ports"
+
+
+  # Print the IP address and each port in the "ip:port" format
+  for port in "${port_arr[@]}"; do
+    echo "${ip}:${port}" >> out/output.txt
+  done
+done < merged.txt
+
+```
+Contributed by [trickest](https://trickest.com)
+
+---
+### securitytrails-reverse-lookup
+<img src="https://img.shields.io/badge/language-bash-black">
+Reverse-lookup a list of domains on SecurityTrails to retrieve hostnames
+
+```
+API_KEY='ADD_SECURITYTRAILS_API_KEY'
+IP_ADDRESSES_INPUT_NODE='ADD_INPUT_NODE_ID'
+# IP_ADDRESSES_INPUT_NODE='http-input-1'
+
+while read ip; do
+  echo "$ip"
+  curl --request POST \
+    --url 'https://api.securitytrails.com/v1/domains/list?include_ips=true' \
+    --header "APIKEY: $API_KEY" \
+    --header 'Content-Type: application/json' \
+    --data '{"filter":{"ipv4":"'$ip'"}}' | jq -r '.records[].hostname' | tee -a out/output.txt
+done < in/$IP_ADDRESSES_INPUT_NODE/output.txt
+
 ```
 Contributed by [trickest](https://trickest.com)
 
@@ -477,7 +784,11 @@ Contributed by [trickest](https://trickest.com)
 Get registrant organization using whois for domain list file input.
 
 ```
-for domain in `cat in/*/*`;do;organization=$(whois $domain | grep "Organization");echo $domain $organization;done
+for domain in `find in -type f -exec cat {} +`; do
+    organization=$(whois $domain | grep 'Organization: ' | head -1 | awk -F ': ' '{print $NF}');
+    echo "$domain: $organization"
+done | tee out/output.txt
+
 ```
 Contributed by [trickest](https://trickest.com)
 
