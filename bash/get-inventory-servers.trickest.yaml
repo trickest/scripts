@@ -1,0 +1,37 @@
+name: get-inventory-servers
+description: Gather servers from the Inventory project
+author: trickest
+author_info: https://trickest.com
+script: |
+  FILE_NAME="servers"
+
+  BASE_URL="https://raw.githubusercontent.com/trickest/inventory/main"
+  # Usage:
+  #     get_invetory_files FILE_NAME COMPANY
+  #     
+  #     Example
+  #     get_inventory_files spider Netflix
+  get_inventory_files() {
+      company=$2
+      file=$1
+      if ! wget "${BASE_URL}/${company}/${file}.txt" -O "out/${company}_${file}.txt" || [ ! -s  "${company}_${file}.txt" ]; then
+          i=00
+          while wget "${BASE_URL}/${company}/${file}_${i}.txt" -O "out/${company}_${file}_${i}.txt"; do
+              i=$(printf '%02d' $((i+1)))
+          done
+      fi
+  }
+
+  echo "Downloading the targets index"
+  wget ${BASE_URL}/targets.json
+  jq -r '.targets[].name' targets.json > companies.txt
+
+  echo "Downloading $FILE_NAME files"
+  while read company; do
+      echo $company
+      get_inventory_files $FILE_NAME $company
+  done < companies.txt
+
+  find out -type f -empty -delete
+  cat out/* > out/output.txt
+language: bash

@@ -1,0 +1,6 @@
+name: masscan-ip-port
+description: Parse masscan's output into IP:Port pairs (e.g. 127.0.0.1:80)
+author: trickest
+author_info: https://trickest.com
+script: find in -type f -exec cat {} + | grep 'Host' | awk -F'[ /]' '{print $3":"$5}' | tee out/output.txt
+language: bash

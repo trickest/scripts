@@ -1,0 +1,23 @@
+name: rustscan-ip-port
+description: Parse RustScan's output into IP:Port pairs (e.g. 127.0.0.1:80)
+author: trickest
+author_info: https://trickest.com
+script: |
+  find in -type f -exec cat {} + > merged.txt
+
+  while read line; do
+    # Extract the IP address and ports from each line
+    ip=$(echo $line | awk '{print $1}')
+    ports=$(echo $line | awk '{print $3}' | tr -d '[]')
+
+
+    # Split the ports into an array
+    IFS=',' read -ra port_arr <<< "$ports"
+
+
+    # Print the IP address and each port in the "ip:port" format
+    for port in "${port_arr[@]}"; do
+      echo "${ip}:${port}" >> out/output.txt
+    done
+  done < merged.txt
+language: bash

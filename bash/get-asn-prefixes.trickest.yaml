@@ -2,6 +2,5 @@ name: get-asn-prefixes
 description: Get asn prefixes by id.
 author: trickest
 author_info: https://trickest.com
-script: curl --silent https://stat.ripe.net/data/announced-prefixes/data.json\?resource\=ASN_ID
-  | jq -r '.data.prefixes[].prefix' | tee out/output.txt
+script: curl --silent https://stat.ripe.net/data/announced-prefixes/data.json\?resource\=ASN_ID | jq -r '.data.prefixes[].prefix' | tee out/output.txt
 language: bash

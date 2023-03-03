@@ -2,6 +2,9 @@ name: whois-get-registrant-organization
 description: Get registrant organization using whois for domain list file input.
 author: trickest
 author_info: https://trickest.com
-script: for domain in `cat in/*/*`;do;organization=$(whois $domain | grep "Organization");echo
-  $domain $organization;done
+script: |
+  for domain in `find in -type f -exec cat {} +`; do
+      organization=$(whois $domain | grep 'Organization: ' | head -1 | awk -F ': ' '{print $NF}');
+      echo "$domain: $organization"
+  done | tee out/output.txt
 language: bash

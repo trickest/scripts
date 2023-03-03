@@ -1,0 +1,26 @@
+name: clone-github-repository
+description: Efficiently clone a GitHub repository using the appropriate configuration.
+author: trickest
+author_info: https://trickest.com
+script: |
+  USERNAME="YOUR_GITHUB_USERNAME"
+  EMAIL="YOUR_GITHUB_EMAIL"
+  REPOSITORY="USER/REPO"
+  TOKEN=$(cat /hive/in/http-input-1/output.txt)
+
+  BRANCH="main"
+
+  git config --global user.email "$EMAIL"
+  git config --global user.name "$USERNAME"
+  git config --global pack.windowMemory "50m"
+  git config --global http.version HTTP/1.1
+  git config --global http.postBuffer 157286400
+  git config --global http.lowSpeedLimit 0
+  git config --global http.lowSpeedTime 999999
+
+  git clone -b $BRANCH --depth 1 https://$USERNAME:$TOKEN@github.com/$REPOSITORY.git
+  cd $(echo $REPOSITORY | awk -F '/' '{print $2}')
+
+  # process your repository here
+  ls | tee /hive/out/output.txt
+language: bash

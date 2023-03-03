@@ -2,9 +2,8 @@ name: eof-raw-data
 description: Paste raw data and add it to output.
 author: trickest
 author_info: https://trickest.com
-script: 'cat << "EOF" | tee out/output.txt
-
+script: |
+  cat << "EOF" | tee out/output.txt
   ADD_CONTENT_HERE
-
-  EOF'
+  EOF
 language: bash

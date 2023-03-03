@@ -1,0 +1,15 @@
+name: generate-line-batches
+description: Generate batches of lines used for batch-output.
+author: trickest
+author_info: https://trickest.com
+script: |-
+  BATCH_SIZE=100
+
+  find in -type f -exec cat {} + > /tmp/merged.txt
+
+  FILE_SIZE=$(wc /tmp/merged.txt | awk '{print $1}')
+  
+  for ((i=1;i<=FILE_SIZE;i+=BATCH_SIZE)); do
+    echo $i,$(($i+$BATCH_SIZE))
+  done | tee out/output.txt
+language: bash

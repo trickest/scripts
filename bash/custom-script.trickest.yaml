@@ -2,5 +2,11 @@ name: custom-script
 description: Create a custom script
 author: trickest
 author_info: https://trickest.com
-script: '# edit this'
+script: |
+  # Edit this
+  # You are currently inside the /hive directory
+  # Input node files/folders are accessible through /hive/in/NODE_ID
+  #   e.g. cat in/amass-1/output.txt
+  # To output a file/folder, write it to the /hive/out directory
+  #   e.g. echo "Hello, world!" | tee out/output.txt
 language: bash
