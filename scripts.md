@@ -148,22 +148,6 @@ find in/ -mindepth 3 -type f -exec cat {} + | egrep -w "Disallow|Allow: " | awk 
 Contributed by [kljunowsky](https://trickest.com)
 
 ---
-### custom-script
-<img src="https://img.shields.io/badge/language-bash-black">
-Create a custom script
-
-```
-# Edit this
-# You are currently inside the /hive directory
-# Input node files/folders are accessible through /hive/in/NODE_ID
-#   e.g. cat in/amass-1/output.txt
-# To output a file/folder, write it to the /hive/out directory
-#   e.g. echo "Hello, world!" | tee out/output.txt
-
-```
-Contributed by [trickest](https://trickest.com)
-
----
 ### delete-dot-as-first-char
 <img src="https://img.shields.io/badge/language-bash-black">
 Delete dot when first character, usefull for parsing subdomains with not valid results.
@@ -180,16 +164,6 @@ Delete dot when it is last character, massdns anyone?
 
 ```
 cat in/*/* | sed 's/\.$//' | tee out/output.txt
-```
-Contributed by [trickest](https://trickest.com)
-
----
-### echo-string
-<img src="https://img.shields.io/badge/language-bash-black">
-Echo string to output.
-
-```
-echo "STRING" | tee out/output.txt
 ```
 Contributed by [trickest](https://trickest.com)
 
@@ -245,24 +219,6 @@ Find string in meg responses and print urls.
 for f in $(find in -mindepth 3 -type f -exec grep 'root:' -R {} + | cut -d":" -f1 | sort -u); do echo "$(head -1 $f) [VULNERABLE]" | egrep '^http'; done | tee out/output.txt
 ```
 Contributed by [gliga](https://trickest.com)
-
----
-### generate-line-batches
-<img src="https://img.shields.io/badge/language-bash-black">
-Generate batches of lines used for batch-output.
-
-```
-BATCH_SIZE=100
-
-find in -type f -exec cat {} + > /tmp/merged.txt
-
-FILE_SIZE=$(wc /tmp/merged.txt | awk '{print $1}')
-
-for ((i=1;i<=FILE_SIZE;i+=BATCH_SIZE)); do
-  echo $i,$(($i+$BATCH_SIZE))
-done | tee out/output.txt
-```
-Contributed by [trickest](https://trickest.com)
 
 ---
 ### generate-random-passwords
@@ -526,16 +482,6 @@ Parse httpx JSON output to line by line file
 
 ```
 find in -type f -exec cat {} + | jq -r '"\(try(.url)) \([try(."title")]) \([try(."status_code")]) \([try(."content_length")]) \([try(."content_type")]) \([try(."host")]) \([try(."final_url")]) \([try(."webserver")]) \([try(."technologies")]) \([try(."a"|.[] | tostring)])"' | tee out/output.txt
-```
-Contributed by [trickest](https://trickest.com)
-
----
-### httpx-json-parse
-<img src="https://img.shields.io/badge/language-bash-black">
-Parse httpx JSON output to line by line file
-
-```
-find in -type f -exec cat {} + | jq -r '"\(try(.url)) \([try(."title")]) \([try(."status-code")]) \([try(."content-length")]) \([try(."content-type")]) \([try(."host")]) \([try(."final-url")]) \([try(."webserver")]) \([try(."technologies")]) \([try(."a"|.[] | tostring)])"' | tee out/output.txt
 ```
 Contributed by [trickest](https://trickest.com)
 
